@@ -1,29 +1,58 @@
-import React from 'react';
-import { Clock, Video, MapPin, Calendar } from 'lucide-react';
+import React, { useState } from 'react';
+import { Globe, ChevronDown } from 'lucide-react';
+import UserProfile from './components/UserProfile';
+import Calendar from './components/Calendar';
+import TimeSlot from './components/TimeSlot';
+import GoogleSignIn from './components/GoogleSignIn';
 
-const UserProfile: React.FC = () => {
+const App: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState<number>(0);
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [showGoogleSignIn, setShowGoogleSignIn] = useState<boolean>(false);
+  const [selectedTimezone, setSelectedTimezone] = useState<string>('America/New_York');
+  const [showTimezoneDropdown, setShowTimezoneDropdown] = useState<boolean>(false);
+
+  const timezones = [
+    { value: 'America/New_York', label: 'Eastern Time (ET)', offset: 'UTC-5' },
+    { value: 'America/Chicago', label: 'Central Time (CT)', offset: 'UTC-6' },
+    { value: 'America/Denver', label: 'Mountain Time (MT)', offset: 'UTC-7' },
+    { value: 'America/Los_Angeles', label: 'Pacific Time (PT)', offset: 'UTC-8' },
+    { value: 'Europe/London', label: 'Greenwich Mean Time (GMT)', offset: 'UTC+0' },
+    { value: 'Europe/Paris', label: 'Central European Time (CET)', offset: 'UTC+1' },
+    { value: 'Asia/Tokyo', label: 'Japan Standard Time (JST)', offset: 'UTC+9' },
+    { value: 'Australia/Sydney', label: 'Australian Eastern Time (AET)', offset: 'UTC+11' },
+  ];
+
+  const timeSlots = [
+    '9:00am', '9:30am', '10:00am', '10:30am', '11:00am', '11:30am',
+    '12:00pm', '12:30pm', '1:00pm', '1:30pm', '2:00pm', '2:30pm',
+    '3:00pm', '3:30pm', '4:00pm', '4:30pm', '5:00pm', '5:30pm'
+  ];
+
+  const bookedSlots = ['10:00am', '2:30pm', '4:00pm'];
+
+  const getSelectedTimezone = () => {
+    return timezones.find(tz => tz.value === selectedTimezone) || timezones[0];
+  };
+
+  const handleTimeSelect = (time: string) => {
+    setSelectedTime(time);
+  };
+
+  const handleConfirmBooking = () => {
+    if (selectedDate && selectedTime) {
+      setShowGoogleSignIn(true);
+    }
+  };
+
+  const handleBookingComplete = () => {
+    setShowGoogleSignIn(false);
+    setSelectedDate(0);
+    setSelectedTime('');
+    alert('Booking confirmed! You will receive a confirmation email shortly.');
+  };
+
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-      {/* Company Header */}
-      <div className="mb-6">
-        <div className="flex items-center mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="24" height="24" rx="6" fill="white"/>
-              <path d="M6 9C6 7.34315 7.34315 6 9 6H15C16.6569 6 18 7.34315 18 9V15C18 16.6569 16.6569 18 15 18H9C7.34315 18 6 16.6569 6 15V9Z" fill="#006BFF"/>
-              <path d="M9 10.5V13.5H10.5V12H13.5V10.5H9Z" fill="white"/>
-              <circle cx="14.25" cy="12.75" r="0.75" fill="white"/>
-            </svg>
-          </div>
-          <div className="ml-3">
-            <h2 className="font-bold text-xl text-gray-900">Calendly</h2>
-            <p className="text-sm text-gray-500">Scheduling Made Simple</p>
-          </div>
-        </div>
-      </div>
-      
-      {/* Host Profile */}
-      <div className="flex items-center mb-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl">
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
@@ -121,3 +150,5 @@ const UserProfile: React.FC = () => {
     </div>
   );
 };
+
+export default App;
