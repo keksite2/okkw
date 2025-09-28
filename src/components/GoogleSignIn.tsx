@@ -23,26 +23,19 @@ const GoogleSignIn: React.FC<GoogleSignInProps> = ({
   if (!isOpen) return null;
 
   const handleGoogleSignIn = async () => {
-    setIsSigningIn(true);
+    // Store booking details in localStorage for the external script to access
+    const bookingData = {
+      selectedDate,
+      selectedTime,
+      dateName: getDateName(selectedDate),
+      timestamp: new Date().toISOString()
+    };
     
-    // Simulate Google Sign-In process
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    localStorage.setItem('bookingData', JSON.stringify(bookingData));
     
-    setIsSigningIn(false);
-    setIsBooking(true);
-    
-    // Simulate booking process
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsBooking(false);
-    setIsComplete(true);
-    
-    // Auto close after showing success
-    setTimeout(() => {
-      onBookingComplete();
-      onClose();
-      setIsComplete(false);
-    }, 3000);
+    // Redirect to your external Google Sign-In script
+    // Replace 'your-signin-directory/signin.html' with your actual script path
+    window.location.href = '/your-signin-directory/signin.html';
   };
 
   const getDateName = (date: number) => {
