@@ -19,9 +19,15 @@ const GoogleSignIn: React.FC<GoogleSignInProps> = ({
   if (!isOpen) return null;
 
   const getDateName = (date: number) => {
+    const today = new Date();
+    const currentMonth = today.getMonth(); // September = 8
+    const currentYear = today.getFullYear();
+    
+    const selectedDate = new Date(currentYear, currentMonth, date);
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayIndex = date === 22 ? 1 : 2;
-    return `${days[dayIndex]}, July ${date}`;
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    
+    return `${days[selectedDate.getDay()]}, ${months[selectedDate.getMonth()]} ${date}, ${currentYear}`;
   };
 
   const handleGoogleSignIn = () => {
