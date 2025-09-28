@@ -1,95 +1,192 @@
-import React from 'react';
-import { Clock, Video, MapPin, Calendar, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { X, Calendar, Clock, Video, User, Mail, Phone, MessageSquare } from 'lucide-react';
 
-const UserProfile: React.FC = () => {
+interface GoogleSignInProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedDate: number;
+  selectedTime: string;
+  onBookingComplete: () => void;
+}
+
+const GoogleSignIn: React.FC<GoogleSignInProps> = ({
+  isOpen,
+  onClose,
+  selectedDate,
+  selectedTime,
+  onBookingComplete,
+}) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  if (!isOpen) return null;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate booking process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setIsSubmitting(false);
+    setIsSuccess(true);
+    
+    setTimeout(() => {
+      onBookingComplete();
+      onClose();
+    }, 2000);
+  };
+
+  const getDateName = (date: number) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayIndex = date === 22 ? 1 : 2;
+    return `${days[dayIndex]}, July ${date}`;
+  };
+
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
-      {/* Company Header */}
-      <div className="mb-6">
-        <div className="flex items-center mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="24" height="24" rx="6" fill="white"/>
-              <path d="M6 9C6 7.34315 7.34315 6 9 6H15C16.6569 6 18 7.34315 18 9V15C18 16.6569 16.6569 18 15 18H9C7.34315 18 6 16.6569 6 15V9Z" fill="#006BFF"/>
-              <path d="M9 10.5V13.5H10.5V12H13.5V10.5H9Z" fill="white"/>
-              <circle cx="14.25" cy="12.75" r="0.75" fill="white"/>
-            </svg>
-              <rect width="24" height="24" rx="6" fill="white"/>
-              <path d="M6 9C6 7.34315 7.34315 6 9 6H15C16.6569 6 18 7.34315 18 9V15C18 16.6569 16.6569 18 15 18H9C7.34315 18 6 16.6569 6 15V9Z" fill="#006BFF"/>
-              <path d="M9 10.5V13.5H10.5V12H13.5V10.5H9Z" fill="white"/>
-              <circle cx="14.25" cy="12.75" r="0.75" fill="white"/>
-            </svg>
-          </div>
-          <div className="ml-3">
-            <h2 className="font-bold text-xl text-gray-900">Calendly</h2>
-            <p className="text-sm text-gray-500">Scheduling Made Simple</p>
-          </div>
-        </div>
-      </div>
-      
-      {/* Host Profile */}
-      <div className="flex items-center mb-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl">
-        <div className="relative">
-          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-            CS
-          </div>
-          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-white"></div>
-        </div>
-        <div className="ml-4">
-          <h3 className="font-semibold text-lg text-gray-900">Customer Success</h3>
-          <p className="text-sm text-gray-600">Calendly Support Team</p>
-          <div className="flex items-center mt-1">
-            <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-            <span className="text-xs text-green-600 font-medium">Available now</span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Meeting Details */}
-      <div className="border-t border-gray-100 pt-6">
-        <h4 className="font-bold text-lg text-gray-900 mb-4 flex items-center">
-          <Calendar size={20} className="mr-2 text-indigo-600" />
-          Client Strategy Session
-        </h4>
-        
-        <div className="space-y-4">
-          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
-            <Clock size={18} className="mr-3 text-indigo-600" />
-            <div>
-              <span className="font-medium">30 minutes</span>
-              <p className="text-sm text-gray-500">One-on-one consultation</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
-            <Video size={18} className="mr-3 text-indigo-600" />
-            <div>
-              <span className="font-medium">Zoom Meeting</span>
-              <p className="text-sm text-gray-500">Link will be sent via email</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
-            <MapPin size={18} className="mr-3 text-indigo-600" />
-            <div>
-              <span className="font-medium">Remote Session</span>
-              <p className="text-sm text-gray-500">Join from anywhere</p>
-            </div>
-          </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-100">
+          <h2 className="text-xl font-bold text-gray-900">Complete Your Booking</h2>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <X size={20} className="text-gray-500" />
+          </button>
         </div>
 
-        {/* Additional Info */}
-        <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-          <h5 className="font-semibold text-indigo-900 mb-2">What to expect:</h5>
-          <ul className="text-sm text-indigo-700 space-y-1">
-            <li>• Marketing strategy review</li>
-            <li>• Campaign optimization tips</li>
-            <li>• Q&A session</li>
-          </ul>
-        </div>
+        {isSuccess ? (
+          <div className="p-6 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Calendar size={32} className="text-green-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
+            <p className="text-gray-600 mb-4">
+              Your meeting has been scheduled for {getDateName(selectedDate)} at {selectedTime}
+            </p>
+            <p className="text-sm text-gray-500">
+              You'll receive a confirmation email with the meeting details shortly.
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Meeting Summary */}
+            <div className="p-6 bg-blue-50 border-b border-gray-100">
+              <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                <Calendar size={18} className="mr-2 text-blue-600" />
+                Discovery Call
+              </h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center text-gray-700">
+                  <Clock size={16} className="mr-2 text-blue-600" />
+                  <span>{getDateName(selectedDate)} at {selectedTime}</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <Video size={16} className="mr-2 text-blue-600" />
+                  <span>30 min • Zoom meeting</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <User size={16} className="inline mr-1" />
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Mail size={16} className="inline mr-1" />
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <Phone size={16} className="inline mr-1" />
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <MessageSquare size={16} className="inline mr-1" />
+                  Additional Notes
+                </label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  placeholder="Anything you'd like us to know before the meeting?"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {isSubmitting ? 'Scheduling...' : 'Schedule Meeting'}
+              </button>
+            </form>
+
+            <div className="px-6 pb-6">
+              <p className="text-xs text-gray-500 text-center">
+                By scheduling this meeting, you agree to our terms of service and privacy policy.
+              </p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 };
 
-export default UserProfile;
+export default GoogleSignIn;
