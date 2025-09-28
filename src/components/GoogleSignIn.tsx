@@ -62,3 +62,5 @@ const UserProfile: React.FC = () => {
             By booking, you agree to receive meeting reminders and updates via email.
           </p>
         </div>
+  )
+}
