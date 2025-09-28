@@ -24,6 +24,11 @@ const UserProfile: React.FC = () => {
               <path d="M9 10.5V13.5H10.5V12H13.5V10.5H9Z" fill="white"/>
               <circle cx="14.25" cy="12.75" r="0.75" fill="white"/>
             </svg>
+              <rect width="24" height="24" rx="6" fill="white"/>
+              <path d="M6 9C6 7.34315 7.34315 6 9 6H15C16.6569 6 18 7.34315 18 9V15C18 16.6569 16.6569 18 15 18H9C7.34315 18 6 16.6569 6 15V9Z" fill="#006BFF"/>
+              <path d="M9 10.5V13.5H10.5V12H13.5V10.5H9Z" fill="white"/>
+              <circle cx="14.25" cy="12.75" r="0.75" fill="white"/>
+            </svg>
           </div>
           <div className="ml-3">
             <h2 className="font-bold text-xl text-gray-900">Calendly</h2>
