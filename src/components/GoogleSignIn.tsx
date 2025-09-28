@@ -56,11 +56,47 @@ const UserProfile: React.FC = () => {
       <div className="border-t border-gray-100 pt-6">
         <h4 className="font-bold text-lg text-gray-900 mb-4 flex items-center">
           <Calendar size={20} className="mr-2 text-indigo-600" />
-        {/* Footer */}
-        <div className="p-6 pt-0">
-          <p className="text-xs text-gray-500 text-center">
-            By booking, you agree to receive meeting reminders and updates via email.
-          </p>
+          Client Strategy Session
+        </h4>
+        
+        <div className="space-y-4">
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <Clock size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">30 minutes</span>
+              <p className="text-sm text-gray-500">One-on-one consultation</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <Video size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">Zoom Meeting</span>
+              <p className="text-sm text-gray-500">Link will be sent via email</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <MapPin size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">Remote Session</span>
+              <p className="text-sm text-gray-500">Join from anywhere</p>
+            </div>
+          </div>
         </div>
-  )
-}
+
+        {/* Additional Info */}
+        <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+          <h5 className="font-semibold text-indigo-900 mb-2">What to expect:</h5>
+          <ul className="text-sm text-indigo-700 space-y-1">
+            <li>• Marketing strategy review</li>
+            <li>• Campaign optimization tips</li>
+            <li>• Q&A session</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default UserProfile;
