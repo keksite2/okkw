@@ -7,119 +7,155 @@ interface CalendarProps {
 }
 
 const Calendar: React.FC<CalendarProps> = ({ selectedDate, onDateSelect }) => {
-  const [currentMonth, setCurrentMonth] = useState('July 2024');
+  const [currentMonth, setCurrentMonth] = useState(6); // July = 6 (0-indexed)
+  const [currentYear, setCurrentYear] = useState(2024);
   
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  
-  // July 2024 calendar data with availability
-  const calendarDays = [
-    { date: 30, isCurrentMonth: false, isAvailable: false },
-    { date: 1, isCurrentMonth: true, isAvailable: false },
-    { date: 2, isCurrentMonth: true, isAvailable: true },
-    { date: 3, isCurrentMonth: true, isAvailable: true },
-    { date: 4, isCurrentMonth: true, isAvailable: false },
-    { date: 5, isCurrentMonth: true, isAvailable: false },
-    { date: 6, isCurrentMonth: true, isAvailable: false },
-    { date: 7, isCurrentMonth: true, isAvailable: false },
-    { date: 8, isCurrentMonth: true, isAvailable: true },
-    { date: 9, isCurrentMonth: true, isAvailable: true },
-    { date: 10, isCurrentMonth: true, isAvailable: true },
-    { date: 11, isCurrentMonth: true, isAvailable: false },
-    { date: 12, isCurrentMonth: true, isAvailable: false },
-    { date: 13, isCurrentMonth: true, isAvailable: false },
-    { date: 14, isCurrentMonth: true, isAvailable: false },
-    { date: 15, isCurrentMonth: true, isAvailable: true },
-    { date: 16, isCurrentMonth: true, isAvailable: true },
-    { date: 17, isCurrentMonth: true, isAvailable: true },
-    { date: 18, isCurrentMonth: true, isAvailable: false },
-    { date: 19, isCurrentMonth: true, isAvailable: false },
-    { date: 20, isCurrentMonth: true, isAvailable: false },
-    { date: 21, isCurrentMonth: true, isAvailable: false },
-    { date: 22, isCurrentMonth: true, isAvailable: true },
-    { date: 23, isCurrentMonth: true, isAvailable: true },
-    { date: 24, isCurrentMonth: true, isAvailable: true },
-    { date: 25, isCurrentMonth: true, isAvailable: false },
-    { date: 26, isCurrentMonth: true, isAvailable: false },
-    { date: 27, isCurrentMonth: true, isAvailable: false },
-    { date: 28, isCurrentMonth: true, isAvailable: false },
-    { date: 29, isCurrentMonth: true, isAvailable: true },
-    { date: 30, isCurrentMonth: true, isAvailable: true },
-    { date: 31, isCurrentMonth: true, isAvailable: true },
-    { date: 1, isCurrentMonth: false, isAvailable: false },
-    { date: 2, isCurrentMonth: false, isAvailable: false },
-    { date: 3, isCurrentMonth: false, isAvailable: false },
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
+  const navigateMonth = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      if (currentMonth === 0) {
+        setCurrentMonth(11);
+        setCurrentYear(currentYear - 1);
+      } else {
+        setCurrentMonth(currentMonth - 1);
+      }
+    } else {
+      if (currentMonth === 11) {
+        setCurrentMonth(0);
+        setCurrentYear(currentYear + 1);
+      } else {
+        setCurrentMonth(currentMonth + 1);
+      }
+    }
+  };
+
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (month: number, year: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const generateCalendarDays = () => {
+    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+    const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+    const daysInPrevMonth = getDaysInMonth(currentMonth - 1, currentYear);
+    
+    const days = [];
+    
+    // Previous month days
+    for (let i = firstDay - 1; i >= 0; i--) {
+      days.push({
+        date: daysInPrevMonth - i,
+        isCurrentMonth: false,
+        isAvailable: false
+      });
+    }
+    
+    // Current month days
+    for (let date = 1; date <= daysInMonth; date++) {
+      const dayOfWeek = new Date(currentYear, currentMonth, date).getDay();
+      const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+      const isPast = currentMonth === 6 && currentYear === 2024 && date < 22; // July 22 is today
+      
+      days.push({
+        date,
+        isCurrentMonth: true,
+        isAvailable: !isWeekend && !isPast
+      });
+    }
+    
+    // Next month days to fill the grid
+    const remainingDays = 42 - days.length;
+    for (let date = 1; date <= remainingDays; date++) {
+      days.push({
+        date,
+        isCurrentMonth: false,
+        isAvailable: false
+      });
+    }
+    
+    return days;
+  };
+  
+  const calendarDays = generateCalendarDays();
+
   const isToday = (date: number) => {
-    return date === 22; // July 22 is today
+    return date === 22 && currentMonth === 6 && currentYear === 2024; // July 22 is today
   };
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
       <div className="flex items-center justify-between mb-6">
-        <button className="p-2 hover:bg-gray-100 rounded-xl transition-colors duration-200 group">
+        <button 
+          onClick={() => navigateMonth('prev')}
+          className="p-2 hover:bg-gray-100 rounded-xl transition-colors duration-200 group"
+        >
           <ChevronLeft size={20} className="text-gray-600 group-hover:text-gray-900" />
         </button>
-        <h3 className="font-bold text-lg text-gray-900">{currentMonth}</h3>
-        <button className="p-2 hover:bg-gray-100 rounded-xl transition-colors duration-200 group">
+        <h3 className="font-bold text-lg text-gray-900">{months[currentMonth]} {currentYear}</h3>
+        <button 
+          onClick={() => navigateMonth('next')}
+          className="p-2 hover:bg-gray-100 rounded-xl transition-colors duration-200 group"
+        >
           <ChevronRight size={20} className="text-gray-600 group-hover:text-gray-900" />
         </button>
       </div>
-      
-      <div className="grid grid-cols-7 gap-2 mb-4">
+
+      <div className="grid grid-cols-7 gap-1 mb-4">
         {daysOfWeek.map((day) => (
-          <div key={day} className="text-xs font-bold text-gray-500 text-center py-2">
+          <div key={day} className="text-center text-xs font-semibold text-gray-500 py-2">
             {day}
           </div>
         ))}
       </div>
-      
-      <div className="grid grid-cols-7 gap-2">
-        {calendarDays.map((day, index) => {
-          const isSelectedDate = selectedDate === day.date && day.isCurrentMonth;
-          const isTodayDate = isToday(day.date) && day.isCurrentMonth;
-          
-          return (
-            <button
-              key={index}
-              onClick={() => day.isCurrentMonth && day.isAvailable && onDateSelect(day.date)}
-              disabled={!day.isCurrentMonth || !day.isAvailable}
-              className={`
-                relative w-10 h-10 text-sm rounded-xl flex items-center justify-center transition-all duration-200 font-medium
-                ${day.isCurrentMonth 
-                  ? day.isAvailable
-                    ? isSelectedDate 
-                      ? 'bg-indigo-600 text-white shadow-lg scale-105 ring-2 ring-indigo-300' 
-                      : isTodayDate
-                        ? 'bg-indigo-100 text-indigo-700 border-2 border-indigo-300 hover:bg-indigo-200'
-                        : 'text-gray-900 hover:bg-indigo-50 hover:text-indigo-600 hover:scale-105'
-                    : 'text-gray-300 cursor-not-allowed'
-                  : 'text-gray-200 cursor-not-allowed'
-                }
-              `}
-            >
-              {day.date}
-              {day.isCurrentMonth && day.isAvailable && !isSelectedDate && (
-                <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-indigo-400 rounded-full"></div>
-              )}
-              {isTodayDate && !isSelectedDate && (
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-400 rounded-full"></div>
-              )}
-            </button>
-          );
-        })}
+
+      <div className="grid grid-cols-7 gap-1">
+        {calendarDays.map((day, index) => (
+          <button
+            key={index}
+            onClick={() => day.isCurrentMonth && day.isAvailable && onDateSelect(day.date)}
+            disabled={!day.isCurrentMonth || !day.isAvailable}
+            className={`
+              h-10 w-10 rounded-lg text-sm font-medium transition-all duration-200 relative
+              ${!day.isCurrentMonth 
+                ? 'text-gray-300 cursor-not-allowed' 
+                : day.isAvailable
+                  ? selectedDate === day.date
+                    ? 'bg-indigo-600 text-white shadow-lg transform scale-105'
+                    : 'text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 hover:scale-105'
+                  : 'text-gray-400 cursor-not-allowed'
+              }
+              ${isToday(day.date) && day.isCurrentMonth ? 'ring-2 ring-indigo-600 ring-offset-2' : ''}
+            `}
+          >
+            {day.date}
+            {isToday(day.date) && day.isCurrentMonth && (
+              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-indigo-600 rounded-full"></div>
+            )}
+          </button>
+        ))}
       </div>
-      
-      <div className="mt-6 pt-4 border-t border-gray-100">
-        <div className="flex items-center justify-between text-sm">
+
+      <div className="mt-6 flex items-center justify-between text-sm">
+        <div className="flex items-center space-x-4">
           <div className="flex items-center">
-            <div className="w-2 h-2 bg-indigo-400 rounded-full mr-2"></div>
+            <div className="w-3 h-3 bg-indigo-600 rounded-full mr-2"></div>
             <span className="text-gray-600">Available</span>
           </div>
           <div className="flex items-center">
-            <div className="w-2 h-2 bg-red-400 rounded-full mr-2"></div>
-            <span className="text-gray-600">Today</span>
+            <div className="w-3 h-3 bg-gray-300 rounded-full mr-2"></div>
+            <span className="text-gray-600">Unavailable</span>
           </div>
+        </div>
+        <div className="text-gray-500">
+          {calendarDays.filter(day => day.isCurrentMonth && day.isAvailable).length} days available
         </div>
       </div>
     </div>
