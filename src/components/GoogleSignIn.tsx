@@ -33,9 +33,8 @@ const GoogleSignIn: React.FC<GoogleSignInProps> = ({
     
     localStorage.setItem('bookingData', JSON.stringify(bookingData));
     
-    // Redirect to your external Google Sign-In script
-    // Replace 'your-signin-directory/signin.html' with your actual script path
-    window.location.href = '/your-signin-directory/signin.html';
+    // Redirect to your external Google Sign-In page
+    window.location.href = '/google-auth/index.html';
   };
 
   const getDateName = (date: number) => {
