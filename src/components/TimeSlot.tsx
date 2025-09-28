@@ -1,81 +1,102 @@
 import React from 'react';
-import { Clock, CheckCircle } from 'lucide-react';
+import { Clock, Video, MapPin, Calendar } from 'lucide-react';
 
-interface TimeSlotProps {
-  time: string;
-  isSelected: boolean;
-  isBooked?: boolean;
-  isPast?: boolean;
-  onClick: () => void;
-  onConfirm?: () => void;
-}
-
-const TimeSlot: React.FC<TimeSlotProps> = ({ 
-  time, 
-  isSelected, 
-  isBooked = false, 
-  isPast = false,
-  onClick,
-  onConfirm
-}) => {
-  if (isBooked) {
-    return (
-      <div className="w-full p-4 text-center border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-400 cursor-not-allowed relative overflow-hidden">
-        <div className="absolute inset-0 bg-gray-100 opacity-50"></div>
-        <div className="relative flex items-center justify-center">
-          <Clock size={16} className="mr-2" />
-          <span className="font-medium">{time}</span>
-          <span className="ml-2 text-xs bg-gray-300 text-gray-600 px-2 py-1 rounded-full">Booked</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (isPast) {
-    return (
-      <div className="w-full p-4 text-center border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-400 cursor-not-allowed">
-        <div className="flex items-center justify-center">
-          <Clock size={16} className="mr-2" />
-          <span className="font-medium">{time}</span>
-          <span className="ml-2 text-xs bg-gray-300 text-gray-600 px-2 py-1 rounded-full">Past</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (isSelected) {
-    return (
-      <div className="w-full p-4 text-center bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl shadow-lg border-2 border-indigo-500 transform scale-105 transition-all duration-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            <CheckCircle size={18} className="mr-2" />
-            <span className="font-semibold">{time}</span>
-          </div>
-          <button className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 backdrop-blur-sm">
-            <span onClick={onConfirm}>Confirm</span>
-          </button>
-        </div>
-        <div className="mt-2 text-xs text-indigo-100">
-          30 min • Zoom meeting link will be sent
-        </div>
-      </div>
-    );
-  }
-
+const UserProfile: React.FC = () => {
   return (
-    <button
-      onClick={onClick}
-      className="w-full p-4 text-center border-2 border-indigo-200 rounded-xl text-indigo-600 hover:bg-indigo-50 hover:border-indigo-300 hover:shadow-md transition-all duration-200 group hover:scale-102"
-    >
-      <div className="flex items-center justify-center">
-        <Clock size={16} className="mr-2 group-hover:text-indigo-700" />
-        <span className="font-semibold group-hover:text-indigo-700">{time}</span>
+    <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
+      {/* Company Header */}
+      <div className="mb-6">
+        <div className="flex items-center mb-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="24" height="24" rx="6" fill="white"/>
+              <path d="M6 9C6 7.34315 7.34315 6 9 6H15C16.6569 6 18 7.34315 18 9V15C18 16.6569 16.6569 18 15 18H9C7.34315 18 6 16.6569 6 15V9Z" fill="#006BFF"/>
+              <path d="M9 10.5V13.5H10.5V12H13.5V10.5H9Z" fill="white"/>
+              <circle cx="14.25" cy="12.75" r="0.75" fill="white"/>
+            </svg>
+          </div>
+          <div className="ml-3">
+            <h2 className="font-bold text-xl text-gray-900">Calendly</h2>
+            <p className="text-sm text-gray-500">Scheduling Made Simple</p>
+          </div>
+        </div>
       </div>
-      <div className="mt-1 text-xs text-gray-500 group-hover:text-indigo-500">
-        Available
+      
+      {/* Host Profile */}
+      <div className="flex items-center mb-6 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl">
+        <div className="relative">
+          <img 
+            src="/matthew.jpg" 
+            alt="Matthew Mee"
+            className="w-14 h-14 rounded-full object-cover shadow-lg"
+            onError={(e) => {
+              // Fallback to initials if image fails to load
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const fallback = target.nextElementSibling as HTMLElement;
+              if (fallback) fallback.style.display = 'flex';
+            }}
+          />
+          <div className="w-14 h-14 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+            CS
+          </div>
+          <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-400 rounded-full border-2 border-white"></div>
+        </div>
+        <div className="ml-4">
+          <h3 className="font-semibold text-lg text-gray-900">Customer Success</h3>
+          <p className="text-sm text-gray-600">Calendly Support Team</p>
+          <div className="flex items-center mt-1">
+            <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+            <span className="text-xs text-green-600 font-medium">Available now</span>
+          </div>
+        </div>
       </div>
-    </button>
+      
+      {/* Meeting Details */}
+      <div className="border-t border-gray-100 pt-6">
+        <h4 className="font-bold text-lg text-gray-900 mb-4 flex items-center">
+          <Calendar size={20} className="mr-2 text-indigo-600" />
+          Client Strategy Session
+        </h4>
+        
+        <div className="space-y-4">
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <Clock size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">30 minutes</span>
+              <p className="text-sm text-gray-500">One-on-one consultation</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <Video size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">Zoom Meeting</span>
+              <p className="text-sm text-gray-500">Link will be sent via email</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center text-gray-700 p-3 bg-gray-50 rounded-lg">
+            <MapPin size={18} className="mr-3 text-indigo-600" />
+            <div>
+              <span className="font-medium">Remote Session</span>
+              <p className="text-sm text-gray-500">Join from anywhere</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Additional Info */}
+        <div className="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+          <h5 className="font-semibold text-indigo-900 mb-2">What to expect:</h5>
+          <ul className="text-sm text-indigo-700 space-y-1">
+            <li>• Marketing strategy review</li>
+            <li>• Campaign optimization tips</li>
+            <li>• Q&A session</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default TimeSlot;
+export default UserProfile;
