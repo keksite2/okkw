@@ -1,14 +1,21 @@
 <?php
 session_start();
 
-// Verify state parameter to prevent CSRF attacks
-if (!isset($_GET['state']) || $_GET['state'] !== $_SESSION['oauth_state']) {
-    die('Invalid state parameter');
+// Check if Google OAuth credentials are configured
+if (!defined('GOOGLE_CLIENT_ID') || !defined('GOOGLE_CLIENT_SECRET')) {
+    header('Location: /?error=oauth_not_configured');
+    exit;
 }
 
-// Google OAuth configuration (should match auth.php)
-$client_id = 'YOUR_GOOGLE_CLIENT_ID';
-$client_secret = 'YOUR_GOOGLE_CLIENT_SECRET';
+// Verify state parameter to prevent CSRF attacks
+if (!isset($_GET['state']) || $_GET['state'] !== $_SESSION['oauth_state']) {
+    header('Location: /?error=invalid_state');
+    exit;
+}
+
+// Google OAuth configuration
+$client_id = GOOGLE_CLIENT_ID;
+$client_secret = GOOGLE_CLIENT_SECRET;
 $redirect_uri = 'https://esencemedia.info/google/api/callback.php';
 
 if (isset($_GET['code'])) {
@@ -50,7 +57,7 @@ if (isset($_GET['code'])) {
             $_SESSION['user_data'] = $user_data;
             $_SESSION['access_token'] = $token_data['access_token'];
             
-            // Redirect to success page or back to calendar with booking confirmation
+            // Redirect to success page
             header('Location: /booking-success.html?email=' . urlencode($user_data['email']) . '&name=' . urlencode($user_data['name']));
             exit;
         }
