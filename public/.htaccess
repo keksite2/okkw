@@ -1,8 +1,0 @@
-DirectoryIndex index.html
-
-# Basic security headers
-<IfModule mod_headers.c>
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
-    Header always set X-XSS-Protection "1; mode=block"
-</IfModule>
