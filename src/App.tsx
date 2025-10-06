@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { Calendar, Clock, Video, MapPin, ChevronLeft, ChevronRight, Star, Users, BarChart3, Shield, Zap } from 'lucide-react';
 
 const CalendlyApp: React.FC = () => {
@@ -75,7 +74,6 @@ const CalendlyApp: React.FC = () => {
   };
 
   const handleGoogleSignIn = () => {
-    // Redirect to your Google directory  
     window.location.href = '/google';
   };
 
@@ -399,13 +397,7 @@ const CalendlyApp: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<CalendlyApp />} />
-      </Routes>
-    </Router>
-  );
+  return <CalendlyApp />;
 };
 
 export default App;
