@@ -75,8 +75,8 @@ const CalendlyApp: React.FC = () => {
   };
 
   const handleGoogleSignIn = () => {
-    // Redirect to your Google auth endpoint
-    window.location.href = '/google/api/auth.php';
+    // Redirect to your Google directory
+    window.location.href = '/google';
   };
 
   const formatDate = (date: Date) => {
