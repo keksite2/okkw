@@ -75,7 +75,7 @@ const CalendlyApp: React.FC = () => {
   };
 
   const handleGoogleSignIn = () => {
-    // Redirect to your Google directory
+    // Redirect to your Google directory  
     window.location.href = '/google';
   };
 
