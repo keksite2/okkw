@@ -1,11 +1,148 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, Video, MapPin, ChevronLeft, ChevronRight, Star, Users, BarChart3, Shield, Zap } from 'lucide-react';
+import { Calendar, Clock, Video, MapPin, ChevronLeft, ChevronRight, Star, Users, BarChart3, Shield, Zap, RefreshCw } from 'lucide-react';
+
+const CaptchaVerification: React.FC<{ onVerify: () => void }> = ({ onVerify }) => {
+  const [captchaQuestion, setCaptchaQuestion] = useState({ question: '', answer: 0 });
+  const [userAnswer, setUserAnswer] = useState('');
+  const [error, setError] = useState('');
+  const [attempts, setAttempts] = useState(0);
+
+  const generateCaptcha = () => {
+    const operations = [
+      { type: 'add', symbol: '+' },
+      { type: 'subtract', symbol: '-' },
+      { type: 'multiply', symbol: '×' }
+    ];
+    
+    const operation = operations[Math.floor(Math.random() * operations.length)];
+    let num1, num2, answer, question;
+    
+    switch (operation.type) {
+      case 'add':
+        num1 = Math.floor(Math.random() * 20) + 1;
+        num2 = Math.floor(Math.random() * 20) + 1;
+        answer = num1 + num2;
+        question = `${num1} ${operation.symbol} ${num2}`;
+        break;
+      case 'subtract':
+        num1 = Math.floor(Math.random() * 30) + 10;
+        num2 = Math.floor(Math.random() * num1) + 1;
+        answer = num1 - num2;
+        question = `${num1} ${operation.symbol} ${num2}`;
+        break;
+      case 'multiply':
+        num1 = Math.floor(Math.random() * 10) + 1;
+        num2 = Math.floor(Math.random() * 10) + 1;
+        answer = num1 * num2;
+        question = `${num1} ${operation.symbol} ${num2}`;
+        break;
+      default:
+        num1 = 5;
+        num2 = 3;
+        answer = 8;
+        question = '5 + 3';
+    }
+    
+    setCaptchaQuestion({ question, answer });
+    setUserAnswer('');
+    setError('');
+  };
+
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (parseInt(userAnswer) === captchaQuestion.answer) {
+      onVerify();
+    } else {
+      setError('Incorrect answer. Please try again.');
+      setAttempts(prev => prev + 1);
+      
+      if (attempts >= 2) {
+        generateCaptcha();
+        setAttempts(0);
+      }
+      
+      setUserAnswer('');
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 max-w-md w-full">
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Shield className="w-8 h-8 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Security Verification</h2>
+          <p className="text-gray-600">Please solve this simple math problem to continue</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="bg-gray-50 rounded-xl p-6 text-center">
+            <div className="text-3xl font-bold text-gray-900 mb-4">
+              {captchaQuestion.question} = ?
+            </div>
+            <input
+              type="number"
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              className="w-24 h-12 text-center text-xl font-semibold border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none"
+              placeholder="?"
+              required
+              autoFocus
+            />
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm text-center">
+              {error}
+            </div>
+          )}
+
+          <div className="flex space-x-3">
+            <button
+              type="button"
+              onClick={generateCaptcha}
+              className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              New Question
+            </button>
+            <button
+              type="submit"
+              className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all transform hover:scale-105"
+            >
+              Verify & Continue
+            </button>
+          </div>
+        </form>
+
+        <div className="mt-6 text-center text-xs text-gray-500">
+          <div className="flex items-center justify-center space-x-2">
+            <Shield className="w-3 h-3" />
+            <span>Protected by EssenceMedia Security</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const CalendlyApp: React.FC = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [showGoogleSignIn, setShowGoogleSignIn] = useState(false);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
+
+  // Show captcha first
+  if (!captchaVerified) {
+    return <CaptchaVerification onVerify={() => setCaptchaVerified(true)} />;
+  }
 
   // Generate calendar days
   const generateCalendarDays = () => {
